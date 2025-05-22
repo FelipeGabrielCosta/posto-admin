@@ -5,23 +5,35 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
-  }
+  },
+  connectionTimeoutMillis: 5000, // 5 segundos de timeout
+  idleTimeoutMillis: 30000
 });
 
-// Adicione esta função para testar a conexão
-const testConnection = async () => {
+// Função de teste de conexão melhorada
+async function testConnection() {
+  let client;
   try {
-    const client = await pool.connect();
-    console.log('Conexão com PostgreSQL estabelecida com sucesso!');
-    client.release();
+    client = await pool.connect();
+    const res = await client.query('SELECT NOW()');
+    console.log('✅ Conexão com PostgreSQL bem-sucedida:', res.rows[0]);
     return true;
   } catch (err) {
-    console.error('Erro ao conectar ao PostgreSQL:', err);
+    console.error('❌ Falha na conexão com PostgreSQL:', err.message);
+    console.log('🔗 String de conexão:', 
+      process.env.DATABASE_URL?.replace(/\/\/.*?:.*?@/, '//*****:*****@'));
     return false;
+  } finally {
+    if (client) client.release();
   }
-};
+}
+
+// Testa a conexão imediatamente
+testConnection().then(isConnected => {
+  if (!isConnected) process.exit(1);
+});
 
 module.exports = {
   pool,
-  connect: testConnection
+  testConnection
 };
