@@ -1,0 +1,14 @@
+# Arquivos de ambiente
+.env
+.env.local
+.env.example
+
+# Dependências
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema
+.DS_Store

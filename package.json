@@ -1,8 +1,7 @@
-
 {
   "name": "posto-gasolina-backend",
   "version": "1.0.0",
-  "description": "Backend API para sistema de posto de gasolina",
+  "description": "API para sistema de posto de gasolina",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -14,7 +13,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "pg": "^8.10.0"
+    "pg": "^8.11.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
