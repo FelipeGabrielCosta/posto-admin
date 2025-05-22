@@ -6,12 +6,12 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false
   },
-  connectionTimeoutMillis: 5000, // 5 segundos de timeout
+  connectionTimeoutMillis: 5000,
   idleTimeoutMillis: 30000
 });
 
-// Função de teste de conexão melhorada
-async function testConnection() {
+// Unified connection function that server.js expects
+async function connect() {
   let client;
   try {
     client = await pool.connect();
@@ -28,12 +28,16 @@ async function testConnection() {
   }
 }
 
-// Testa a conexão imediatamente
-testConnection().then(isConnected => {
-  if (!isConnected) process.exit(1);
+// Test connection immediately when module loads
+connect().then(isConnected => {
+  if (!isConnected) {
+    console.error('Falha na conexão inicial com o banco de dados');
+    // Don't exit here - let server.js handle it
+  }
 });
 
 module.exports = {
   pool,
-  testConnection
+  connect,  // The function that server.js expects
+  testConnection: connect  // Alias if you need it elsewhere
 };
